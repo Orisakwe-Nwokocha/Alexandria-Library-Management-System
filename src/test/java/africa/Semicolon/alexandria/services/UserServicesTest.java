@@ -39,6 +39,7 @@ public class UserServicesTest {
     @BeforeEach
     public void setUp() {
         users.deleteAll();
+        books.deleteAll();
 
         registerRequest = new RegisterRequest();
         registerRequest.setUsername("username");
@@ -59,13 +60,16 @@ public class UserServicesTest {
 
         borrowBookRequest = new BorrowBookRequest();
         borrowBookRequest.setUsername("username");
+
+        returnBookRequest = new ReturnBookRequest();
+        returnBookRequest.setUsername("username");
     }
 
-    private User getUser(String username) {
-        return users.findByUsername(lowerCaseValueOf(username)).orElseThrow(()-> new IllegalArgumentException("error"));
+    private User getUser() {
+        return users.findByUsername(lowerCaseValueOf("username")).orElseThrow(()-> new IllegalArgumentException("error"));
     }
-    private Borrower getBorrower(String username) {
-        return borrowers.findByMember(getUser(username));
+    private Borrower getBorrower() {
+        return borrowers.findByMember(getUser());
     }
 
     private Book getBook() {
@@ -208,6 +212,74 @@ public class UserServicesTest {
             assertThat(e.getMessage(), is(expectedMessage));
         }
         assertThat(getBook().getQuantity(), is(1));
+    }
+
+    @Test
+    public void givenBorrowedBook_returnBook_borrowerLibraryLoanIs0Test() {
+        userServices.register(registerRequest);
+        registerRequest.setUsername("username2");
+        registerRequest.setRole("librarian");
+        userServices.register(registerRequest);
+        userServices.addBook(addBookRequest);
+        borrowBookRequest.setBookId(getBook().getId());
+        var borrowBookResponse = userServices.borrowBook(borrowBookRequest);
+        var borrower = getBorrower();
+        assertThat(borrower.getBooks(), hasSize(1));
+        assertThat(borrower.getLibraryLoans(), hasSize(1));
+        assertThat(getBook().getQuantity(), is(0));
+        System.out.println(borrowBookResponse.getLibraryLoan());
+
+        for (long i = 0L; i < 15_000_000_001L; i++);
+
+        returnBookRequest.setLibraryLoanId(borrower.getLibraryLoans().getFirst().getId());
+        var returnBookResponse = userServices.returnBook(returnBookRequest);
+        borrower = getBorrower();
+        assertThat(returnBookResponse.getLibraryLoan(), notNullValue());
+        assertThat(borrower.getBooks(), hasSize(0));
+        assertThat(borrower.getLibraryLoans(), hasSize(0));
+        assertThat(getBook().getQuantity(), is(1));
+        System.out.println(returnBookResponse.getLibraryLoan());
+    }
+
+    @Test
+    public void returnBookWithoutBeingAValidBorrower_IllegalUserStateExceptionIsThrownTaest() {
+        userServices.register(registerRequest);
+        registerRequest.setUsername("username2");
+        registerRequest.setRole("librarian");
+        userServices.register(registerRequest);
+        userServices.addBook(addBookRequest);
+        assertThat(getBook().getQuantity(), is(1));
+
+        try {
+            userServices.returnBook(returnBookRequest);
+        }
+        catch (IllegalUserStateException e) {
+            String expectedMessage = "You need to borrow a book before returning the book";
+            assertThat(e.getMessage(), is(expectedMessage));
+        }
+        assertThat(getBook().getQuantity(), is(1));
+    }
+
+    @Test
+    public void returnBookWithInvalidLibraryLoanId_BadRequestExceptionIsThrownTaest() {
+        userServices.register(registerRequest);
+        registerRequest.setUsername("username2");
+        registerRequest.setRole("librarian");
+        userServices.register(registerRequest);
+        userServices.addBook(addBookRequest);
+        borrowBookRequest.setBookId(getBook().getId());
+        userServices.borrowBook(borrowBookRequest);
+        assertThat(getBook().getQuantity(), is(0));
+
+        returnBookRequest.setLibraryLoanId("bunchOfStrings");
+        try {
+            userServices.returnBook(returnBookRequest);
+        }
+        catch (BadRequestException e) {
+            String expectedMessage = "Library loan with id 'bunchOfStrings' not found";
+            assertThat(e.getMessage(), is(expectedMessage));
+        }
+        assertThat(getBook().getQuantity(), is(0));
     }
 
 }

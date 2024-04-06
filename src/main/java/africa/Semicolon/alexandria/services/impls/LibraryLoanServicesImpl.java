@@ -14,7 +14,7 @@ import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.IllegalBookStateException;
 import africa.Semicolon.alexandria.exceptions.IllegalUserStateException;
 import africa.Semicolon.alexandria.services.BookServices;
-import africa.Semicolon.alexandria.services.BorrowServices;
+import africa.Semicolon.alexandria.services.LibraryLoanServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ import java.util.List;
 import static africa.Semicolon.alexandria.utils.Mapper.*;
 
 @Service
-public class BorrowServicesImpl implements BorrowServices {
+public class LibraryLoanServicesImpl implements LibraryLoanServices {
     @Autowired
     private LibraryLoans libraryLoans;
     @Autowired
@@ -33,7 +33,7 @@ public class BorrowServicesImpl implements BorrowServices {
     private Borrowers borrowers;
 
     @Override
-    public BorrowBookResponse borrowBookWith(BorrowBookRequest borrowBookRequest, User member) {
+    public BorrowBookResponse loanBookWith(BorrowBookRequest borrowBookRequest, User member) {
         Book book = bookServices.findBookBy(borrowBookRequest.getBookId());
         validate(book);
         if (isNew(member)) createNewBorrowerWith(member);
@@ -55,8 +55,8 @@ public class BorrowServicesImpl implements BorrowServices {
 
     private void updateModels(Borrower borrower, Book book, LibraryLoan libraryLoan) {
         bookServices.updateQuantityOf(book, 1);
-        borrower.getBooks().remove(book);
-        borrower.getLibraryLoans().remove(libraryLoan);
+        borrower.getBooks().removeIf(b -> b.getId().equals(book.getId()));
+        borrower.getLibraryLoans().removeIf(l -> l.getId().equals(libraryLoan.getId()));
         libraryLoan.setReturnedAt(LocalDateTime.now());
         libraryLoans.save(libraryLoan);
         borrowers.save(borrower);
@@ -73,7 +73,6 @@ public class BorrowServicesImpl implements BorrowServices {
         if (isNew(member)) throw new IllegalUserStateException("You need to borrow a book before returning the book");
         return borrowers.findByMember(member);
     }
-
 
     private void updateModels(Book book, Borrower borrower, LibraryLoan newLibraryLoan) {
         bookServices.updateQuantityOf(book, -1);

@@ -6,7 +6,7 @@ import africa.Semicolon.alexandria.dto.requests.ReturnBookRequest;
 import africa.Semicolon.alexandria.dto.responses.BorrowBookResponse;
 import africa.Semicolon.alexandria.dto.responses.ReturnBookResponse;
 
-public interface BorrowServices {
-    BorrowBookResponse borrowBookWith(BorrowBookRequest borrowBookRequest, User member);
+public interface LibraryLoanServices {
+    BorrowBookResponse loanBookWith(BorrowBookRequest borrowBookRequest, User member);
     ReturnBookResponse returnBookWith(ReturnBookRequest returnBookRequest, User member);
 }

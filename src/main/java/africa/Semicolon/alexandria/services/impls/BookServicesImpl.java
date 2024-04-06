@@ -3,17 +3,15 @@ package africa.Semicolon.alexandria.services.impls;
 import africa.Semicolon.alexandria.data.models.Book;
 import africa.Semicolon.alexandria.data.repositories.Books;
 import africa.Semicolon.alexandria.dto.requests.AddBookRequest;
-import africa.Semicolon.alexandria.dto.requests.GetBookRequest;
 import africa.Semicolon.alexandria.dto.responses.AddBookResponse;
-import africa.Semicolon.alexandria.dto.responses.GetAllBooksResponse;
-import africa.Semicolon.alexandria.dto.responses.GetBookResponse;
 import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.BookNotFoundException;
 import africa.Semicolon.alexandria.services.BookServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static africa.Semicolon.alexandria.utils.Mapper.*;
+import static africa.Semicolon.alexandria.utils.Mapper.map;
+import static africa.Semicolon.alexandria.utils.Mapper.mapAddBookResponse;
 
 @Service
 public class BookServicesImpl implements BookServices {
@@ -28,18 +26,8 @@ public class BookServicesImpl implements BookServices {
     }
 
     @Override
-    public GetBookResponse getBookWith(GetBookRequest getBookRequest) {
-        return mapGetBookResponse(findBookBy(getBookRequest.getBookId()));
-    }
-
-    @Override
     public Book findBookBy(String id) {
         return books.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
-    }
-
-    @Override
-    public GetAllBooksResponse getAllBooks() {
-        return mapGetAllBooksResponse(books.findAll());
     }
 
     @Override
@@ -51,4 +39,14 @@ public class BookServicesImpl implements BookServices {
         books.save(book);
     }
 
+//    @Override
+//    public GetBookResponse getBookWith(GetBookRequest getBookRequest) {
+//        return mapGetBookResponse(findBookBy(getBookRequest.getBookId()));
+//    }
+//
+//    @Override
+//    public GetAllBooksResponse getAllBooks() {
+//        return mapGetAllBooksResponse(books.findAll());
+
+//    }
 }

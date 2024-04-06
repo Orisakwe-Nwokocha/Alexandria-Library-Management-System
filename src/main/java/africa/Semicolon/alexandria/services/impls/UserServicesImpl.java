@@ -8,7 +8,7 @@ import africa.Semicolon.alexandria.dto.requests.*;
 import africa.Semicolon.alexandria.dto.responses.*;
 import africa.Semicolon.alexandria.exceptions.*;
 import africa.Semicolon.alexandria.services.BookServices;
-import africa.Semicolon.alexandria.services.BorrowServices;
+import africa.Semicolon.alexandria.services.LibraryLoanServices;
 import africa.Semicolon.alexandria.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class UserServicesImpl implements UserServices {
     @Autowired
     private BookServices bookServices;
     @Autowired
-    private BorrowServices borrowServices;
+    private LibraryLoanServices libraryLoanServices;
 
     @Override
     public RegisterResponse register(RegisterRequest registerRequest) {
@@ -66,7 +66,7 @@ public class UserServicesImpl implements UserServices {
         User member = findUserBy(borrowBookRequest.getUsername());
         validateLoginStatusOf(member);
         validate(member, MEMBER, "Only valid members are authorized to perform this action");
-        return borrowServices.borrowBookWith(borrowBookRequest, member);
+        return libraryLoanServices.loanBookWith(borrowBookRequest, member);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class UserServicesImpl implements UserServices {
         User member = findUserBy(returnBookRequest.getUsername());
         validateLoginStatusOf(member);
         validate(member, MEMBER, "Only valid members are authorized to perform this action");
-        return borrowServices.returnBookWith(returnBookRequest, member);
+        return libraryLoanServices.returnBookWith(returnBookRequest, member);
     }
 
 
