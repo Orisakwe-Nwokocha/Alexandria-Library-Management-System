@@ -26,11 +26,11 @@ public class Book {
     @NotBlank(message = "Quantity cannot be blank")
     @Min(value = 0, message = "Quantity cannot be less than 0")
     private Integer quantity;
-    private boolean isUnavailable = quantity == 0;
+    private boolean isUnavailable;
 
     @Override
     public String toString() {
-        String format = "Book{id='%s'\ntitle='%s'\nauthor='%s'\ngenre='%s'}";
+        String format = "Book{\nid ='%s'\ntitle = '%s'\nauthor = '%s'\ngenre = '%s'\n}";
         return String.format(format, id, title, author, genre);
     }
 }

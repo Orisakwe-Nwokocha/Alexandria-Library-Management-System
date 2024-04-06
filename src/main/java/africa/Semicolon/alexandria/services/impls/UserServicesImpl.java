@@ -1,4 +1,4 @@
-package africa.Semicolon.alexandria.services;
+package africa.Semicolon.alexandria.services.impls;
 
 
 import africa.Semicolon.alexandria.data.constants.Role;
@@ -7,6 +7,9 @@ import africa.Semicolon.alexandria.data.repositories.Users;
 import africa.Semicolon.alexandria.dto.requests.*;
 import africa.Semicolon.alexandria.dto.responses.*;
 import africa.Semicolon.alexandria.exceptions.*;
+import africa.Semicolon.alexandria.services.BookServices;
+import africa.Semicolon.alexandria.services.BorrowServices;
+import africa.Semicolon.alexandria.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

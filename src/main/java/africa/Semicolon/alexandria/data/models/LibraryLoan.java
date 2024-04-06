@@ -17,7 +17,7 @@ public class LibraryLoan {
     private Borrower borrower;
     @DBRef
     private Book book;
-    private final LocalDateTime borrowedAt = LocalDateTime.now();
+    private LocalDateTime borrowedAt = LocalDateTime.now();
     private LocalDateTime returnedAt;
 
     @Override
@@ -26,7 +26,7 @@ public class LibraryLoan {
         String borrowedAtFormatted = borrowedAt.format(formatter);
         String returnedAtFormatted = (returnedAt != null) ? returnedAt.format(formatter) : "Not returned yet";
 
-        String format = "LibraryLoan{id='%s'\nbook id='%s'\nborrowed at='%s', returned at='%s'}";
+        String format = "LibraryLoan{\nid = '%s'\nbook id = '%s'\nborrowed at = '%s'\nreturned at = '%s'\n}";
         return String.format(format, id, book.getId(), borrowedAtFormatted, returnedAtFormatted);
     }
 }

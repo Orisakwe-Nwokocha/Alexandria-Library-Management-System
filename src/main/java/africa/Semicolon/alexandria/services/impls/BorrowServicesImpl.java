@@ -1,4 +1,4 @@
-package africa.Semicolon.alexandria.services;
+package africa.Semicolon.alexandria.services.impls;
 
 import africa.Semicolon.alexandria.data.models.Book;
 import africa.Semicolon.alexandria.data.models.Borrower;
@@ -13,6 +13,8 @@ import africa.Semicolon.alexandria.dto.responses.ReturnBookResponse;
 import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.IllegalBookStateException;
 import africa.Semicolon.alexandria.exceptions.IllegalUserStateException;
+import africa.Semicolon.alexandria.services.BookServices;
+import africa.Semicolon.alexandria.services.BorrowServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

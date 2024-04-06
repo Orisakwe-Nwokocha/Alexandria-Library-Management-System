@@ -69,7 +69,7 @@ public final class Mapper {
         catch (IllegalArgumentException e) {
             throw new InvalidBookGenreException(String.format("Invalid book genre: %s", genre));
         }
-        if (addBookRequest.getQuantity() < 0) throw new BadRequestException("The book quantity cannot be less than 1");
+        if (addBookRequest.getQuantity() < 1) throw new BadRequestException("The book quantity cannot be less than 1");
         book.setQuantity(addBookRequest.getQuantity());
         book.setTitle(addBookRequest.getTitle());
         book.setAuthor(addBookRequest.getAuthor());
