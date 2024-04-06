@@ -18,5 +18,5 @@ public class Borrower {
     private User member;
     @DBRef
     private List<Book> books = new ArrayList<>();
-
+    private List<LibraryLoan> libraryLoans = new ArrayList<>();
 }

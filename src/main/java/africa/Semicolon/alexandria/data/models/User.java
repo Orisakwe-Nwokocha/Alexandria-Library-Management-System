@@ -19,5 +19,4 @@ public class User {
     @NotNull(message = "Role cannot be null")
     private Role role;
     private boolean isLoggedIn = true;
-    private boolean withBorrowedBook;
 }

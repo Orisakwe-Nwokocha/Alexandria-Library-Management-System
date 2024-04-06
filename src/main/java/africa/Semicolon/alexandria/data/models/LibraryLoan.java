@@ -1,11 +1,15 @@
 package africa.Semicolon.alexandria.data.models;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Data
+@Document("LibraryLoans")
 public class LibraryLoan {
     @Id
     private String id;
@@ -13,7 +17,7 @@ public class LibraryLoan {
     private Borrower borrower;
     @DBRef
     private Book book;
-    private LocalDateTime borrowedAt = LocalDateTime.now();
+    private final LocalDateTime borrowedAt = LocalDateTime.now();
     private LocalDateTime returnedAt;
 
     @Override

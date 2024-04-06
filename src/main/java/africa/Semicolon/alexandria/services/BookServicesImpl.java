@@ -7,8 +7,8 @@ import africa.Semicolon.alexandria.dtos.requests.GetBookRequest;
 import africa.Semicolon.alexandria.dtos.responses.AddBookResponse;
 import africa.Semicolon.alexandria.dtos.responses.GetAllBooksResponse;
 import africa.Semicolon.alexandria.dtos.responses.GetBookResponse;
+import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.BookNotFoundException;
-import africa.Semicolon.alexandria.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +27,13 @@ public class BookServicesImpl implements BookServices {
     }
 
     @Override
-    public GetBookResponse getBookBy(GetBookRequest getBookRequest) {
+    public GetBookResponse getBookWith(GetBookRequest getBookRequest) {
         return mapGetBookResponse(findBookBy(getBookRequest.getBookId()));
+    }
+
+    @Override
+    public Book findBookBy(String id) {
+        return books.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
     }
 
     @Override
@@ -36,7 +41,12 @@ public class BookServicesImpl implements BookServices {
         return mapGetAllBooksResponse(books.findAll());
     }
 
-    private Book findBookBy(String id) {
-        return books.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
+    @Override
+    public void updateQuantityOf(Book book, int amount) {
+        int newQuantity = book.getQuantity() + amount;
+        if (newQuantity < 0) throw new BadRequestException("The book quantity cannot be less than 0");
+        book.setQuantity(newQuantity);
+        books.save(book);
     }
+
 }

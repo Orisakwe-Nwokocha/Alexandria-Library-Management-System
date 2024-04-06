@@ -1,6 +1,7 @@
 package africa.Semicolon.alexandria.data.models;
 
 import africa.Semicolon.alexandria.data.constants.Genre;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -21,8 +22,9 @@ public class Book {
     @NotNull (message = "Book genre cannot be null")
     @NotBlank(message = "Book genre cannot be blank")
     private Genre genre;
-    @NotNull (message = "Number of pages cannot be null")
-    @NotBlank(message = "Number of pages cannot be blank")
+    @NotNull (message = "Quantity cannot be null")
+    @NotBlank(message = "Quantity cannot be blank")
+    @Min(value = 0, message = "Quantity cannot be less than 0")
     private Integer quantity;
     private boolean isUnavailable = quantity == 0;
 

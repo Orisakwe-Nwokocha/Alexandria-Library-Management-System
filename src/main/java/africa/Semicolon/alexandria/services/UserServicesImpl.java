@@ -63,7 +63,7 @@ public class UserServicesImpl implements UserServices {
         User member = findUserBy(borrowBookRequest.getUsername());
         validateLoginStatusOf(member);
         validate(member, MEMBER, "Only valid members are authorized to perform this action");
-        return borrowServices.borrowBook(borrowBookRequest, member);
+        return borrowServices.borrowBookWith(borrowBookRequest, member);
     }
 
 

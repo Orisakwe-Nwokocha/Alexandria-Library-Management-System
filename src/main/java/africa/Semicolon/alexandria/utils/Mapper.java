@@ -3,10 +3,13 @@ package africa.Semicolon.alexandria.utils;
 import africa.Semicolon.alexandria.data.constants.Genre;
 import africa.Semicolon.alexandria.data.constants.Role;
 import africa.Semicolon.alexandria.data.models.Book;
+import africa.Semicolon.alexandria.data.models.Borrower;
+import africa.Semicolon.alexandria.data.models.LibraryLoan;
 import africa.Semicolon.alexandria.data.models.User;
 import africa.Semicolon.alexandria.dtos.requests.AddBookRequest;
 import africa.Semicolon.alexandria.dtos.requests.RegisterRequest;
 import africa.Semicolon.alexandria.dtos.responses.*;
+import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.InvalidBookGenreException;
 import africa.Semicolon.alexandria.exceptions.InvalidUserRoleException;
 
@@ -65,9 +68,10 @@ public final class Mapper {
         catch (IllegalArgumentException e) {
             throw new InvalidBookGenreException(String.format("Invalid book genre: %s", genre));
         }
+        if (addBookRequest.getQuantity() < 0) throw new BadRequestException("The book quantity cannot be less than 1");
+        book.setQuantity(addBookRequest.getQuantity());
         book.setTitle(addBookRequest.getTitle());
         book.setAuthor(addBookRequest.getAuthor());
-        book.setQuantity(addBookRequest.getNumberOfPages());
         return book;
     }
 
@@ -88,5 +92,20 @@ public final class Mapper {
         GetAllBooksResponse getAllBooksResponse = new GetAllBooksResponse();
         getAllBooksResponse.setBooks(books.toString());
         return getAllBooksResponse;
+    }
+
+    public static LibraryLoan map(Borrower borrower, Book book) {
+        LibraryLoan libraryLoan = new LibraryLoan();
+        libraryLoan.setBorrower(borrower);
+        libraryLoan.setBook(book);
+        return libraryLoan;
+    }
+
+    public static BorrowBookResponse map(LibraryLoan newLibraryLoan) {
+        BorrowBookResponse borrowBookResponse = new BorrowBookResponse();
+        String username = newLibraryLoan.getBorrower().getMember().getUsername();
+        borrowBookResponse.setUsername(username);
+        borrowBookResponse.setLibraryLoan(newLibraryLoan.toString());
+        return borrowBookResponse;
     }
 }

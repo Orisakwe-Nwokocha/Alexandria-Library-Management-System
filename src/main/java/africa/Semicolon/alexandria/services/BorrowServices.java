@@ -5,5 +5,5 @@ import africa.Semicolon.alexandria.dtos.requests.BorrowBookRequest;
 import africa.Semicolon.alexandria.dtos.responses.BorrowBookResponse;
 
 public interface BorrowServices {
-    BorrowBookResponse borrowBook(BorrowBookRequest borrowBookRequest, User member);
+    BorrowBookResponse borrowBookWith(BorrowBookRequest borrowBookRequest, User borrower);
 }
