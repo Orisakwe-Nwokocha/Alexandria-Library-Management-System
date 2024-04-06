@@ -1,7 +1,7 @@
 package africa.Semicolon.alexandria.utils;
 
 import africa.Semicolon.alexandria.data.models.User;
-import africa.Semicolon.alexandria.dtos.requests.LoginRequest;
+import africa.Semicolon.alexandria.dto.requests.LoginRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

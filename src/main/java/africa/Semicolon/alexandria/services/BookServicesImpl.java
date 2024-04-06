@@ -2,11 +2,11 @@ package africa.Semicolon.alexandria.services;
 
 import africa.Semicolon.alexandria.data.models.Book;
 import africa.Semicolon.alexandria.data.repositories.Books;
-import africa.Semicolon.alexandria.dtos.requests.AddBookRequest;
-import africa.Semicolon.alexandria.dtos.requests.GetBookRequest;
-import africa.Semicolon.alexandria.dtos.responses.AddBookResponse;
-import africa.Semicolon.alexandria.dtos.responses.GetAllBooksResponse;
-import africa.Semicolon.alexandria.dtos.responses.GetBookResponse;
+import africa.Semicolon.alexandria.dto.requests.AddBookRequest;
+import africa.Semicolon.alexandria.dto.requests.GetBookRequest;
+import africa.Semicolon.alexandria.dto.responses.AddBookResponse;
+import africa.Semicolon.alexandria.dto.responses.GetAllBooksResponse;
+import africa.Semicolon.alexandria.dto.responses.GetBookResponse;
 import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.BookNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

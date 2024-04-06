@@ -6,12 +6,13 @@ import africa.Semicolon.alexandria.data.models.Book;
 import africa.Semicolon.alexandria.data.models.Borrower;
 import africa.Semicolon.alexandria.data.models.LibraryLoan;
 import africa.Semicolon.alexandria.data.models.User;
-import africa.Semicolon.alexandria.dtos.requests.AddBookRequest;
-import africa.Semicolon.alexandria.dtos.requests.RegisterRequest;
-import africa.Semicolon.alexandria.dtos.responses.*;
+import africa.Semicolon.alexandria.dto.requests.AddBookRequest;
+import africa.Semicolon.alexandria.dto.requests.RegisterRequest;
+import africa.Semicolon.alexandria.dto.responses.*;
 import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.InvalidBookGenreException;
 import africa.Semicolon.alexandria.exceptions.InvalidUserRoleException;
+import africa.Semicolon.alexandria.dto.responses.ReturnBookResponse;
 
 import java.util.List;
 
@@ -101,11 +102,20 @@ public final class Mapper {
         return libraryLoan;
     }
 
-    public static BorrowBookResponse map(LibraryLoan newLibraryLoan) {
+    public static BorrowBookResponse mapBorrowBookResponse(LibraryLoan libraryLoan) {
         BorrowBookResponse borrowBookResponse = new BorrowBookResponse();
-        String username = newLibraryLoan.getBorrower().getMember().getUsername();
+        String username = libraryLoan.getBorrower().getMember().getUsername();
         borrowBookResponse.setUsername(username);
-        borrowBookResponse.setLibraryLoan(newLibraryLoan.toString());
+        borrowBookResponse.setLibraryLoan(libraryLoan.toString());
+        borrowBookResponse.setBook(libraryLoan.getBook().toString());
         return borrowBookResponse;
+    }
+
+    public static ReturnBookResponse mapReturnBookResponse(LibraryLoan libraryLoan) {
+        ReturnBookResponse returnBookResponse = new ReturnBookResponse();
+        String username = libraryLoan.getBorrower().getMember().getUsername();
+        returnBookResponse.setUsername(username);
+        returnBookResponse.setLibraryLoan(libraryLoan.toString());
+        return returnBookResponse;
     }
 }

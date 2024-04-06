@@ -1,4 +1,4 @@
-package africa.Semicolon.alexandria.dtos.requests;
+package africa.Semicolon.alexandria.dto.requests;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

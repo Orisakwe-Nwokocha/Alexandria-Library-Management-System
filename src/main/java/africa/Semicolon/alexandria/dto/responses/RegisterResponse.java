@@ -1,4 +1,4 @@
-package africa.Semicolon.alexandria.dtos.responses;
+package africa.Semicolon.alexandria.dto.responses;
 
 import lombok.Data;
 

@@ -6,16 +6,20 @@ import africa.Semicolon.alexandria.data.models.LibraryLoan;
 import africa.Semicolon.alexandria.data.models.User;
 import africa.Semicolon.alexandria.data.repositories.Borrowers;
 import africa.Semicolon.alexandria.data.repositories.LibraryLoans;
-import africa.Semicolon.alexandria.dtos.requests.BorrowBookRequest;
-import africa.Semicolon.alexandria.dtos.responses.BorrowBookResponse;
+import africa.Semicolon.alexandria.dto.requests.BorrowBookRequest;
+import africa.Semicolon.alexandria.dto.requests.ReturnBookRequest;
+import africa.Semicolon.alexandria.dto.responses.BorrowBookResponse;
+import africa.Semicolon.alexandria.dto.responses.ReturnBookResponse;
+import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.IllegalBookStateException;
-import africa.Semicolon.alexandria.utils.Mapper;
+import africa.Semicolon.alexandria.exceptions.IllegalUserStateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static africa.Semicolon.alexandria.utils.Mapper.map;
+import static africa.Semicolon.alexandria.utils.Mapper.*;
 
 @Service
 public class BorrowServicesImpl implements BorrowServices {
@@ -35,8 +39,39 @@ public class BorrowServicesImpl implements BorrowServices {
         validate(borrower.getBooks(), borrowBookRequest.getBookId());
         LibraryLoan newLibraryLoan = map(borrower, book);
         updateModels(book, borrower, newLibraryLoan);
-        return Mapper.map(newLibraryLoan);
+        return mapBorrowBookResponse(newLibraryLoan);
     }
+
+    @Override
+    public ReturnBookResponse returnBookWith(ReturnBookRequest returnBookRequest, User member) {
+        Borrower borrower = getBorrower(member);
+        LibraryLoan libraryLoan = findLibraryLoanBy(returnBookRequest.getLibraryLoanId(), borrower.getLibraryLoans());
+        Book book = libraryLoan.getBook();
+        updateModels(borrower, book, libraryLoan);
+        return mapReturnBookResponse(libraryLoan);
+    }
+
+    private void updateModels(Borrower borrower, Book book, LibraryLoan libraryLoan) {
+        bookServices.updateQuantityOf(book, 1);
+        borrower.getBooks().remove(book);
+        borrower.getLibraryLoans().remove(libraryLoan);
+        libraryLoan.setReturnedAt(LocalDateTime.now());
+        libraryLoans.save(libraryLoan);
+        borrowers.save(borrower);
+    }
+
+    private LibraryLoan findLibraryLoanBy(String id, List<LibraryLoan> libraryLoans) {
+        return libraryLoans.stream()
+                .filter(libraryLoan -> libraryLoan.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException(String.format("Library loan with id '%s' not found", id)));
+    }
+
+    private Borrower getBorrower(User member) {
+        if (isNew(member)) throw new IllegalUserStateException("You need to borrow a book before returning the book");
+        return borrowers.findByMember(member);
+    }
+
 
     private void updateModels(Book book, Borrower borrower, LibraryLoan newLibraryLoan) {
         bookServices.updateQuantityOf(book, -1);
@@ -48,7 +83,7 @@ public class BorrowServicesImpl implements BorrowServices {
 
     private void validate(List<Book> books, String bookId) {
         if (books.stream().anyMatch(book -> book.getId().equals(bookId)))
-            throw new IllegalBookStateException(String.format("Book with id %s already borrowed", bookId));
+            throw new BadRequestException(String.format("Book with id '%s' already borrowed", bookId));
     }
 
     private void createNewBorrowerWith(User member) {

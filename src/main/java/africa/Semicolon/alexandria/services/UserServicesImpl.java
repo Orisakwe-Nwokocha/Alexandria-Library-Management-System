@@ -4,8 +4,8 @@ package africa.Semicolon.alexandria.services;
 import africa.Semicolon.alexandria.data.constants.Role;
 import africa.Semicolon.alexandria.data.models.User;
 import africa.Semicolon.alexandria.data.repositories.Users;
-import africa.Semicolon.alexandria.dtos.requests.*;
-import africa.Semicolon.alexandria.dtos.responses.*;
+import africa.Semicolon.alexandria.dto.requests.*;
+import africa.Semicolon.alexandria.dto.responses.*;
 import africa.Semicolon.alexandria.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,6 +64,14 @@ public class UserServicesImpl implements UserServices {
         validateLoginStatusOf(member);
         validate(member, MEMBER, "Only valid members are authorized to perform this action");
         return borrowServices.borrowBookWith(borrowBookRequest, member);
+    }
+
+    @Override
+    public ReturnBookResponse returnBook(ReturnBookRequest returnBookRequest) {
+        User member = findUserBy(returnBookRequest.getUsername());
+        validateLoginStatusOf(member);
+        validate(member, MEMBER, "Only valid members are authorized to perform this action");
+        return borrowServices.returnBookWith(returnBookRequest, member);
     }
 
 

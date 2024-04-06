@@ -1,9 +1,9 @@
-package africa.Semicolon.alexandria.dtos.responses;
+package africa.Semicolon.alexandria.dto.responses;
 
 import lombok.Data;
 
 @Data
-public class BorrowBookResponse {
+public class ReturnBookResponse {
     private String username;
     private String libraryLoan;
 }

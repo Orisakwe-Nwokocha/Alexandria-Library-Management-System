@@ -26,7 +26,7 @@ public class LibraryLoan {
         String borrowedAtFormatted = borrowedAt.format(formatter);
         String returnedAtFormatted = (returnedAt != null) ? returnedAt.format(formatter) : "Not returned yet";
 
-        String format = "LibraryLoan{Id='%s'\nbook='%s'\nborrowedAt='%s', returnedAt='%s'}";
-        return String.format(format, id, book, borrowedAtFormatted, returnedAtFormatted);
+        String format = "LibraryLoan{id='%s'\nbook id='%s'\nborrowed at='%s', returned at='%s'}";
+        return String.format(format, id, book.getId(), borrowedAtFormatted, returnedAtFormatted);
     }
 }
