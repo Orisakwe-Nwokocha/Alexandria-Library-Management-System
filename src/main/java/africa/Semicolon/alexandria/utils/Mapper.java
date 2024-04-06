@@ -1,12 +1,16 @@
 package africa.Semicolon.alexandria.utils;
 
+import africa.Semicolon.alexandria.data.constants.Genre;
 import africa.Semicolon.alexandria.data.constants.Role;
+import africa.Semicolon.alexandria.data.models.Book;
 import africa.Semicolon.alexandria.data.models.User;
+import africa.Semicolon.alexandria.dtos.requests.AddBookRequest;
 import africa.Semicolon.alexandria.dtos.requests.RegisterRequest;
-import africa.Semicolon.alexandria.dtos.responses.LoginResponse;
-import africa.Semicolon.alexandria.dtos.responses.LogoutResponse;
-import africa.Semicolon.alexandria.dtos.responses.RegisterResponse;
-import africa.Semicolon.alexandria.exceptions.InvalidArgumentException;
+import africa.Semicolon.alexandria.dtos.responses.*;
+import africa.Semicolon.alexandria.exceptions.InvalidBookGenreException;
+import africa.Semicolon.alexandria.exceptions.InvalidUserRoleException;
+
+import java.util.List;
 
 import static africa.Semicolon.alexandria.utils.Cleaner.lowerCaseValueOf;
 import static africa.Semicolon.alexandria.utils.Cleaner.upperCaseValueOf;
@@ -16,16 +20,14 @@ public final class Mapper {
     public static User map(RegisterRequest registerRequest) {
         String username = lowerCaseValueOf(registerRequest.getUsername());
         String password = encode(registerRequest.getPassword());
-        String role = upperCaseValueOf(registerRequest.getRole());
-
+        String role = registerRequest.getRole();
         User user = new User();
         try {
-            user.setRole(Role.valueOf(role));
+            user.setRole(Role.valueOf(upperCaseValueOf(role)));
         }
         catch (IllegalArgumentException e) {
-            throw new InvalidArgumentException("Invalid role: " + role);
+            throw new InvalidUserRoleException(String.format("Invalid role: %s", role));
         }
-
         user.setUsername(username);
         user.setPassword(password);
         user.setName(registerRequest.getName());
@@ -54,4 +56,37 @@ public final class Mapper {
         return logoutResponse;
     }
 
+    public static Book map(AddBookRequest addBookRequest) {
+        String genre = addBookRequest.getGenre();
+        Book book = new Book();
+        try {
+            book.setGenre(Genre.valueOf(upperCaseValueOf(genre)));
+        }
+        catch (IllegalArgumentException e) {
+            throw new InvalidBookGenreException(String.format("Invalid book genre: %s", genre));
+        }
+        book.setTitle(addBookRequest.getTitle());
+        book.setAuthor(addBookRequest.getAuthor());
+        book.setQuantity(addBookRequest.getNumberOfPages());
+        return book;
+    }
+
+    public static AddBookResponse mapAddBookResponse(Book savedBook) {
+        AddBookResponse addBookResponse = new AddBookResponse();
+        addBookResponse.setBookId(savedBook.getId());
+        return addBookResponse;
+    }
+
+    public static GetBookResponse mapGetBookResponse(Book book) {
+        GetBookResponse getBookResponse = new GetBookResponse();
+        getBookResponse.setBookId(book.getId());
+        getBookResponse.setBook(book.toString());
+        return getBookResponse;
+    }
+
+    public static GetAllBooksResponse mapGetAllBooksResponse(List<Book> books) {
+        GetAllBooksResponse getAllBooksResponse = new GetAllBooksResponse();
+        getAllBooksResponse.setBooks(books.toString());
+        return getAllBooksResponse;
+    }
 }

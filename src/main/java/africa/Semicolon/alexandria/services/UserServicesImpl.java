@@ -4,17 +4,14 @@ package africa.Semicolon.alexandria.services;
 import africa.Semicolon.alexandria.data.constants.Role;
 import africa.Semicolon.alexandria.data.models.User;
 import africa.Semicolon.alexandria.data.repositories.Users;
-import africa.Semicolon.alexandria.dtos.requests.LoginRequest;
-import africa.Semicolon.alexandria.dtos.requests.LogoutRequest;
-import africa.Semicolon.alexandria.dtos.requests.RegisterRequest;
-import africa.Semicolon.alexandria.dtos.responses.LoginResponse;
-import africa.Semicolon.alexandria.dtos.responses.LogoutResponse;
-import africa.Semicolon.alexandria.dtos.responses.RegisterResponse;
+import africa.Semicolon.alexandria.dtos.requests.*;
+import africa.Semicolon.alexandria.dtos.responses.*;
 import africa.Semicolon.alexandria.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static africa.Semicolon.alexandria.data.constants.Role.LIBRARIAN;
+import static africa.Semicolon.alexandria.data.constants.Role.MEMBER;
 import static africa.Semicolon.alexandria.utils.Cleaner.lowerCaseValueOf;
 import static africa.Semicolon.alexandria.utils.Cryptography.isMatches;
 import static africa.Semicolon.alexandria.utils.Mapper.*;
@@ -23,6 +20,10 @@ import static africa.Semicolon.alexandria.utils.Mapper.*;
 public class UserServicesImpl implements UserServices {
     @Autowired
     private Users users;
+    @Autowired
+    private BookServices bookServices;
+    @Autowired
+    private BorrowServices borrowServices;
 
     @Override
     public RegisterResponse register(RegisterRequest registerRequest) {
@@ -49,38 +50,40 @@ public class UserServicesImpl implements UserServices {
         return mapLogoutResponseWith(savedUser);
     }
 
+    @Override
+    public AddBookResponse addBook(AddBookRequest addBookRequest) {
+        User librarian = findUserBy(addBookRequest.getUsername());
+        validateLoginStatusOf(librarian);
+        validate(librarian, LIBRARIAN, "Only valid librarians are authorized to perform this action");
+        return bookServices.addBookWith(addBookRequest);
+    }
 
-//    private void validate(User user) {
-//        boolean isAdmin = user.getRole().equals(LIBRARIAN);
-//        if (!isAdmin) throw new InvalidUserRoleException("User is not a valid admin");
-//    }
+    @Override
+    public BorrowBookResponse borrowBook(BorrowBookRequest borrowBookRequest) {
+        User member = findUserBy(borrowBookRequest.getUsername());
+        validateLoginStatusOf(member);
+        validate(member, MEMBER, "Only valid members are authorized to perform this action");
+        return borrowServices.borrowBook(borrowBookRequest, member);
+    }
+
+
+    private void validate(User user, Role authorizedRole, String errorMessage) {
+        boolean isValidRole = user.getRole().equals(authorizedRole);
+        if (!isValidRole) throw new UnauthorizedException(errorMessage);
+    }
 
     private void validateLoginStatusOf(User user) {
         if (!user.isLoggedIn()) throw new IllegalUserStateException("User is not logged in");
     }
 
     private User findUserBy(String username) {
-        username = lowerCaseValueOf(username);
-        User foundUser = users.findByUsername(username);
-        if (foundUser == null) throw new UserNotFoundException(String.format("User with '%s' not found", username));
-        return foundUser;
-    }
-
-    private void validateUniqueUsername(RegisterRequest registerRequest) {
-        String username = lowerCaseValueOf(registerRequest.getUsername());
-        boolean userExists = users.existsByUsername(username);
-        if (userExists) throw new UserExistsException(String.format("%s already exists", username));
-    }
-
-    private void validateBlank(RegisterRequest registerRequest) {
-        boolean isBlank = registerRequest.getUsername().isBlank()
-                || registerRequest.getPassword().isBlank()
-                || registerRequest.getRole().isBlank();
-        if (isBlank) throw new InvalidArgumentException("Registration details cannot be blank");
+        return users.findByUsername(lowerCaseValueOf(username))
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with '%s' not found", username)));
     }
 
     private void validate(RegisterRequest registerRequest) {
-        validateBlank(registerRequest);
-        validateUniqueUsername(registerRequest);
+        String username = lowerCaseValueOf(registerRequest.getUsername());
+        boolean userExists = users.existsByUsername(username);
+        if (userExists) throw new UserExistsException(String.format("%s already exists", username));
     }
 }

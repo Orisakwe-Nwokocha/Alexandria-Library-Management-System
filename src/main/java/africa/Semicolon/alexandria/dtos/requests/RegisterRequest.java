@@ -1,17 +1,19 @@
 package africa.Semicolon.alexandria.dtos.requests;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public final class RegisterRequest {
     private String name;
-    private String emailAddress;
-    private String phoneNumber;
-    @NotNull(message = "Please enter a username")
+    @NotNull(message = "Username cannot be null")
+    @NotBlank(message = "Username cannot be blank")
     private String username;
-    @NotNull(message = "Please enter a password")
+    @NotNull(message = "Password cannot be null")
+    @NotBlank(message = "Password cannot be blank")
     private String password;
-    @NotNull(message = "Please select a role")
+    @NotNull(message = "Role cannot be null")
+    @NotBlank(message = "Role cannot be blank")
     private String role;
 }
