@@ -14,7 +14,6 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequestMapping("/user")
 public class UserControllers {
-
     @Autowired
     private UserServices userServices;
 
