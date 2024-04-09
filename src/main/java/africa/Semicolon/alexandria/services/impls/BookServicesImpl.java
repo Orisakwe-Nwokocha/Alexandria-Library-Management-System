@@ -3,15 +3,19 @@ package africa.Semicolon.alexandria.services.impls;
 import africa.Semicolon.alexandria.data.models.Book;
 import africa.Semicolon.alexandria.data.repositories.Books;
 import africa.Semicolon.alexandria.dto.requests.AddBookRequest;
+import africa.Semicolon.alexandria.dto.requests.RemoveBookRequest;
 import africa.Semicolon.alexandria.dto.responses.AddBookResponse;
+import africa.Semicolon.alexandria.dto.responses.GetAllBooksResponse;
+import africa.Semicolon.alexandria.dto.responses.GetBookResponse;
+import africa.Semicolon.alexandria.dto.responses.RemoveBookResponse;
+import africa.Semicolon.alexandria.exceptions.AlexandriaAppException;
 import africa.Semicolon.alexandria.exceptions.BadRequestException;
 import africa.Semicolon.alexandria.exceptions.BookNotFoundException;
 import africa.Semicolon.alexandria.services.BookServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static africa.Semicolon.alexandria.utils.Mapper.map;
-import static africa.Semicolon.alexandria.utils.Mapper.mapAddBookResponse;
+import static africa.Semicolon.alexandria.utils.Mapper.*;
 
 @Service
 public class BookServicesImpl implements BookServices {
@@ -39,14 +43,21 @@ public class BookServicesImpl implements BookServices {
         books.save(book);
     }
 
-//    @Override
-//    public GetBookResponse getBookWith(GetBookRequest getBookRequest) {
-//        return mapGetBookResponse(findBookBy(getBookRequest.getBookId()));
-//    }
-//
-//    @Override
-//    public GetAllBooksResponse getAllBooks() {
-//        return mapGetAllBooksResponse(books.findAll());
+    @Override
+    public GetBookResponse getBookBy(String id) {
+        return mapGetBookResponse(findBookBy(id));
+    }
 
-//    }
+    @Override
+    public GetAllBooksResponse getAllBooks() {
+        if (books.findAll().isEmpty()) throw new AlexandriaAppException("No available books found");
+        return mapGetAllBooksResponse(books.findAll());
+    }
+
+    @Override
+    public RemoveBookResponse removeBookWith(RemoveBookRequest removeBookRequest) {
+        Book foundBook = findBookBy(removeBookRequest.getBookId());
+        books.delete(foundBook);
+        return mapRemoveBookResponse(removeBookRequest.getBookId());
+    }
 }

@@ -118,4 +118,10 @@ public final class Mapper {
         returnBookResponse.setLibraryLoan(libraryLoan.toString());
         return returnBookResponse;
     }
+
+    public static RemoveBookResponse mapRemoveBookResponse(String bookId) {
+        RemoveBookResponse removeBookResponse = new RemoveBookResponse();
+        removeBookResponse.setBookId(bookId);
+        return removeBookResponse;
+    }
 }

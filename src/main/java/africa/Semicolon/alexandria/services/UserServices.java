@@ -10,4 +10,5 @@ public interface UserServices {
     AddBookResponse addBook(AddBookRequest addBookRequest);
     BorrowBookResponse borrowBook(BorrowBookRequest borrowBookRequest);
     ReturnBookResponse returnBook(ReturnBookRequest returnBookRequest);
+    RemoveBookResponse removeBook(RemoveBookRequest removeBookRequest);
 }

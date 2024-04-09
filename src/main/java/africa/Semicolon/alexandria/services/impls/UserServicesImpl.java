@@ -55,26 +55,39 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public AddBookResponse addBook(AddBookRequest addBookRequest) {
-        User librarian = findUserBy(addBookRequest.getUsername());
-        validateLoginStatusOf(librarian);
-        validate(librarian, LIBRARIAN, "Only valid librarians are authorized to perform this action");
+        validateLibrarianWith(addBookRequest.getUsername());
         return bookServices.addBookWith(addBookRequest);
     }
 
     @Override
     public BorrowBookResponse borrowBook(BorrowBookRequest borrowBookRequest) {
         User member = findUserBy(borrowBookRequest.getUsername());
-        validateLoginStatusOf(member);
-        validate(member, MEMBER, "Only valid members are authorized to perform this action");
+        validate(member);
         return libraryLoanServices.loanBookWith(borrowBookRequest, member);
     }
 
     @Override
     public ReturnBookResponse returnBook(ReturnBookRequest returnBookRequest) {
         User member = findUserBy(returnBookRequest.getUsername());
+        validate(member);
+        return libraryLoanServices.returnBookWith(returnBookRequest, member);
+    }
+
+    @Override
+    public RemoveBookResponse removeBook(RemoveBookRequest removeBookRequest) {
+        validateLibrarianWith(removeBookRequest.getUsername());
+        return bookServices.removeBookWith(removeBookRequest);
+    }
+
+    private void validate(User member) {
         validateLoginStatusOf(member);
         validate(member, MEMBER, "Only valid members are authorized to perform this action");
-        return libraryLoanServices.returnBookWith(returnBookRequest, member);
+    }
+
+    private void validateLibrarianWith(String username) {
+        User librarian = findUserBy(username);
+        validateLoginStatusOf(librarian);
+        validate(librarian, LIBRARIAN, "Only valid librarians are authorized to perform this action");
     }
 
 

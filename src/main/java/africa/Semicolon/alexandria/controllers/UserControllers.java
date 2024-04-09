@@ -57,6 +57,16 @@ public class UserControllers {
         }
     }
 
+    @DeleteMapping("/remove-book")
+    public ResponseEntity<ApiResponse> removeBook(@Valid @RequestBody RemoveBookRequest removeBookRequest) {
+        try {
+            RemoveBookResponse result = userServices.removeBook(removeBookRequest);
+            return new ResponseEntity<>(new ApiResponse(true, result), OK);
+        } catch (AlexandriaAppException e) {
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
     @PatchMapping("/borrow-book")
     public ResponseEntity<ApiResponse> borrowBook(@Valid @RequestBody BorrowBookRequest borrowBookRequest) {
         try {
