@@ -7,8 +7,10 @@ import africa.Semicolon.alexandria.services.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -18,7 +20,8 @@ public class UserControllers {
     private UserServices userServices;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest, Errors errors) {
+        if (errors.hasErrors()) return getValidationErrorMessageOf(errors);
         try {
             RegisterResponse result = userServices.register(registerRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
@@ -28,7 +31,8 @@ public class UserControllers {
     }
 
     @PatchMapping("/login")
-    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, Errors errors) {
+        if (errors.hasErrors()) return getValidationErrorMessageOf(errors);
         try {
             LoginResponse result = userServices.login(loginRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), OK);
@@ -38,7 +42,8 @@ public class UserControllers {
     }
 
     @PatchMapping("/logout")
-    public ResponseEntity<ApiResponse> logout(@Valid @RequestBody LogoutRequest logoutRequest) {
+    public ResponseEntity<?> logout(@Valid @RequestBody LogoutRequest logoutRequest, Errors errors) {
+        if (errors.hasErrors()) return getValidationErrorMessageOf(errors);
         try {
             LogoutResponse result = userServices.logout(logoutRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), OK);
@@ -48,7 +53,8 @@ public class UserControllers {
     }
 
     @PostMapping("/add-book")
-    public ResponseEntity<ApiResponse> addBook(@Valid @RequestBody AddBookRequest addBookRequest) {
+    public ResponseEntity<?> addBook(@Valid @RequestBody AddBookRequest addBookRequest, Errors errors) {
+        if (errors.hasErrors()) return getValidationErrorMessageOf(errors);
         try {
             AddBookResponse result = userServices.addBook(addBookRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
@@ -58,7 +64,8 @@ public class UserControllers {
     }
 
     @DeleteMapping("/remove-book")
-    public ResponseEntity<ApiResponse> removeBook(@Valid @RequestBody RemoveBookRequest removeBookRequest) {
+    public ResponseEntity<?> removeBook(@Valid @RequestBody RemoveBookRequest removeBookRequest, Errors errors) {
+        if (errors.hasErrors()) return getValidationErrorMessageOf(errors);
         try {
             RemoveBookResponse result = userServices.removeBook(removeBookRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), OK);
@@ -68,7 +75,8 @@ public class UserControllers {
     }
 
     @PatchMapping("/borrow-book")
-    public ResponseEntity<ApiResponse> borrowBook(@Valid @RequestBody BorrowBookRequest borrowBookRequest) {
+    public ResponseEntity<?> borrowBook(@Valid @RequestBody BorrowBookRequest borrowBookRequest, Errors errors) {
+        if (errors.hasErrors()) return getValidationErrorMessageOf(errors);
         try {
             BorrowBookResponse result = userServices.borrowBook(borrowBookRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), OK);
@@ -78,12 +86,18 @@ public class UserControllers {
     }
 
     @PatchMapping("/return-book")
-    public ResponseEntity<ApiResponse> returnBook(@Valid @RequestBody ReturnBookRequest returnBookRequest) {
+    public ResponseEntity<?> returnBook(@Valid @RequestBody ReturnBookRequest returnBookRequest, Errors errors) {
+        if (errors.hasErrors()) return getValidationErrorMessageOf(errors);
         try {
             ReturnBookResponse result = userServices.returnBook(returnBookRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), OK);
         } catch (AlexandriaAppException e) {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
+    }
+
+    private static ResponseEntity<String> getValidationErrorMessageOf(Errors errors) {
+        return new ResponseEntity<>(String.format("Operation failed: %s is null",
+                requireNonNull(errors.getFieldError()).getField()), BAD_REQUEST);
     }
 }

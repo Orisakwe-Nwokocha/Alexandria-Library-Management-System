@@ -22,7 +22,7 @@ public class LibraryLoan {
 
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yy 'at' hh:mm:ss a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy 'at' hh:mm:ss a");
         String borrowedAtFormatted = borrowedAt.format(formatter);
         String returnedAtFormatted = (returnedAt != null) ? returnedAt.format(formatter) : "Not returned yet";
 

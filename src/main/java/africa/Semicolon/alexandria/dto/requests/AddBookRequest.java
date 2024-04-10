@@ -19,7 +19,6 @@ public class AddBookRequest {
     @NotBlank(message = "Book genre cannot be blank")
     private String genre;
     @NotNull (message = "Quantity cannot be null")
-    @NotBlank(message = "Quantity cannot be blank")
     @Min(value = 1, message = "Quantity cannot be less than 1")
     private int quantity;
 }

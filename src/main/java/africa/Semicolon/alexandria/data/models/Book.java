@@ -20,10 +20,8 @@ public class Book {
     @NotBlank(message = "Book author cannot be blank")
     private String author;
     @NotNull (message = "Book genre cannot be null")
-    @NotBlank(message = "Book genre cannot be blank")
     private Genre genre;
     @NotNull (message = "Quantity cannot be null")
-    @NotBlank(message = "Quantity cannot be blank")
     @Min(value = 0, message = "Quantity cannot be less than 0")
     private Integer quantity;
     private boolean isUnavailable;

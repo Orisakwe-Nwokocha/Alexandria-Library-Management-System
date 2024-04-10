@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.SimpleErrors;
 
 import static africa.Semicolon.alexandria.utils.Cleaner.lowerCaseValueOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,6 +31,8 @@ public class UserControllersTest {
     private Books books;
     @Autowired
     private Borrowers borrowers;
+    private final Object object = new Object();
+    private final Errors errors = new SimpleErrors(object);
 
     private RegisterRequest registerRequest;
     private LoginRequest loginRequest;
@@ -89,122 +93,122 @@ public class UserControllersTest {
 
     @Test
     public void testRegister_isSuccessful_isTrue() {
-        var response = userControllers.register(registerRequest);
+        var response = userControllers.register(registerRequest, errors);
         assertIsSuccessful(response, true);
         assertThat(response.getStatusCode(), is(CREATED));
     }
 
     @Test
     public void testRegister_isSuccessful_isFalse() {
-        userControllers.register(registerRequest);
-        var response = userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
+        var response = userControllers.register(registerRequest, errors);
         assertIsSuccessful(response, false);
         assertThat(response.getStatusCode(), is(BAD_REQUEST));
     }
 
     @Test
     public void testLogin_isSuccessful_isTrue() {
-        userControllers.register(registerRequest);
-        var response = userControllers.login(loginRequest);
+        userControllers.register(registerRequest, errors);
+        var response = userControllers.login(loginRequest, errors);
         assertIsSuccessful(response, true);
         assertThat(response.getStatusCode(), is(OK));
     }
 
     @Test
     public void testLogin_isSuccessful_isFalse() {
-        userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
         loginRequest.setPassword("wrongPassword");
-        var response = userControllers.login(loginRequest);
+        var response = userControllers.login(loginRequest, errors);
         assertIsSuccessful(response, false);
         assertThat(response.getStatusCode(), is(BAD_REQUEST));
     }
 
     @Test
     public void testLogout_isSuccessful_isTrue() {
-        userControllers.register(registerRequest);
-        var response = userControllers.logout(logoutRequest);
+        userControllers.register(registerRequest, errors);
+        var response = userControllers.logout(logoutRequest, errors);
         assertIsSuccessful(response, true);
         assertThat(response.getStatusCode(), is(OK));
     }
 
     @Test
     public void testLogout_isSuccessful_isFalse() {
-        userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
         logoutRequest.setUsername("nonExistingUsername");
-        var response = userControllers.logout(logoutRequest);
+        var response = userControllers.logout(logoutRequest, errors);
         assertIsSuccessful(response, false);
         assertThat(response.getStatusCode(), is(BAD_REQUEST));
     }
 
     @Test
     public void testAddBook_isSuccessful_isTrue() {
-        userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
         registerRequest.setUsername("username2");
         registerRequest.setRole("librarian");
-        userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
 
-        var response = userControllers.addBook(addBookRequest);
+        var response = userControllers.addBook(addBookRequest, errors);
         assertIsSuccessful(response, true);
         assertThat(response.getStatusCode(), is(CREATED));
     }
 
     @Test
     public void testAddBook_isSuccessful_isFalse() {
-        userControllers.register(registerRequest);
-        var response = userControllers.addBook(addBookRequest);
+        userControllers.register(registerRequest, errors);
+        var response = userControllers.addBook(addBookRequest, errors);
         assertIsSuccessful(response, false);
         assertThat(response.getStatusCode(), is(BAD_REQUEST));
     }
 
     @Test
     public void testBorrowBook_isSuccessful_isTrue() {
-        userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
         registerRequest.setUsername("username2");
         registerRequest.setRole("librarian");
-        userControllers.register(registerRequest);
-        userControllers.addBook(addBookRequest);
+        userControllers.register(registerRequest, errors);
+        userControllers.addBook(addBookRequest, errors);
 
         borrowBookRequest.setBookId(getBookId());
-        var response = userControllers.borrowBook(borrowBookRequest);
+        var response = userControllers.borrowBook(borrowBookRequest, errors);
         assertIsSuccessful(response, true);
         assertThat(response.getStatusCode(), is(OK));
     }
 
     @Test
     public void testBorrowBook_isSuccessful_isFalse() {
-        userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
         registerRequest.setUsername("username2");
         registerRequest.setRole("librarian");
-        userControllers.register(registerRequest);
-        userControllers.addBook(addBookRequest);
+        userControllers.register(registerRequest, errors);
+        userControllers.addBook(addBookRequest, errors);
 
         borrowBookRequest.setBookId(getBookId());
-        userControllers.borrowBook(borrowBookRequest);
-        var response = userControllers.borrowBook(borrowBookRequest);
+        userControllers.borrowBook(borrowBookRequest, errors);
+        var response = userControllers.borrowBook(borrowBookRequest, errors);
         assertIsSuccessful(response, false);
         assertThat(response.getStatusCode(), is(BAD_REQUEST));
     }
 
     @Test
     public void testReturnBook_isSuccessful_isTrue() {
-        userControllers.register(registerRequest);
+        userControllers.register(registerRequest, errors);
         registerRequest.setUsername("username2");
         registerRequest.setRole("librarian");
-        userControllers.register(registerRequest);
-        userControllers.addBook(addBookRequest);
+        userControllers.register(registerRequest, errors);
+        userControllers.addBook(addBookRequest, errors);
 
         borrowBookRequest.setBookId(getBookId());
-        userControllers.borrowBook(borrowBookRequest);
+        userControllers.borrowBook(borrowBookRequest, errors);
         returnBookRequest.setLibraryLoanId(getLibraryLoanId());
-        var response = userControllers.returnBook(returnBookRequest);
+        var response = userControllers.returnBook(returnBookRequest, errors);
         assertIsSuccessful(response, true);
         assertThat(response.getStatusCode(), is(OK));
     }
 
     @Test
     public void testReturnBook_isSuccessful_isFalse() {
-        userControllers.register(registerRequest);
-        var response = userControllers.returnBook(returnBookRequest);
+        userControllers.register(registerRequest, errors);
+        var response = userControllers.returnBook(returnBookRequest, errors);
         assertIsSuccessful(response, false);
         assertThat(response.getStatusCode(), is(BAD_REQUEST));
     }
