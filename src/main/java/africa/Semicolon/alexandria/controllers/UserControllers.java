@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -97,7 +96,7 @@ public class UserControllers {
     }
 
     private static ResponseEntity<String> getValidationErrorMessageOf(Errors errors) {
-        return new ResponseEntity<>(String.format("Operation failed: %s is null",
-                requireNonNull(errors.getFieldError()).getField()), BAD_REQUEST);
+        String defaultMessage = errors.getAllErrors().getFirst().getDefaultMessage();
+        return new ResponseEntity<>(String.format("Operation failed: %s", defaultMessage), BAD_REQUEST);
     }
 }
