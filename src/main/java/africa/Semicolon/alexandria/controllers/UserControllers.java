@@ -6,9 +6,12 @@ import africa.Semicolon.alexandria.exceptions.AlexandriaAppException;
 import africa.Semicolon.alexandria.services.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -98,5 +101,18 @@ public class UserControllers {
     private static ResponseEntity<String> getValidationErrorMessageOf(Errors errors) {
         String defaultMessage = errors.getAllErrors().getFirst().getDefaultMessage();
         return new ResponseEntity<>(String.format("Operation failed: %s", defaultMessage), BAD_REQUEST);
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("POST", "PATCH", "DELETE", "GET")
+                        .allowedHeaders("*");
+            }
+        };
     }
 }

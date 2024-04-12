@@ -91,7 +91,7 @@ public final class Mapper {
 
     public static GetAllBooksResponse mapGetAllBooksResponse(List<Book> books) {
         GetAllBooksResponse getAllBooksResponse = new GetAllBooksResponse();
-        getAllBooksResponse.setBooks(books.toString());
+        getAllBooksResponse.setBooks(books);
         return getAllBooksResponse;
     }
 

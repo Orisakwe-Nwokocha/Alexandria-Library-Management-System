@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Alexandria Library User Interface</title>
+</head>
+<body>
+<nav class="nav" id="navbar">
+  <ul class="nav-list">
+    <li><a href="#welcome-section">About</a></li>
+    <li><a href="#requests">Signup</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="welcome-section" id="welcome-section">
+  <div class="text-wrapper">
+    <h1>Welcome to Alexandria Library!</h1>
+    <span class="title1">The all-knowing library</span>
+    <span class="title2">...You can get all your information here!...</span>
+  </div>
+</section>
+
+
+
+<section class="projects-section" id="requests">
+  <section id="registerSection" class="container">
+    <form id="registerForm" class="form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="dropdown">Select your role</label>
+        <select id="dropdown" name="role" class="form-control" required>
+          <option disabled selected value>Select preferred role</option>
+          <option value="member">Member</option>
+          <option value="librarian">Librarian</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" id="submit" class="submit-button">Register</button>
+      </div>
+    </form>
+  </section>
+
+
+</section>
+
+<section class="contact-section" id="contact">
+  <div class="contact-section-header">
+    <h2>Hit me up!</h2>
+    <p>- I don't bite... maybe -</p>
+  </div>
+  <div class="contact-links">
+    <a href="#" class="btn contact-details"><i class="fab fa-facebook-square"></i> Facebook</a>
+    <a id="profile-link" href="https://github.com/Orisakwe-Nwokocha" target="_blank" class="btn contact-details"><i class="fab fa-github"></i> GitHub</a>
+    <a href="#" class="btn contact-details"><i class="fab fa-twitter"></i> Twitter</a>
+    <a href="#" class="btn contact-details"><i class="fas fa-envelope"></i> Email</a>
+    <a href="#" class="btn contact-details"><i class="fas fa-mobile-alt"></i> Call me</a>
+  </div>
+</section>
+
+<footer>
+  <p>&copy;2024 All rights reserved | This web page was created by <a href="https://github.com/Orisakwe-Nwokocha" target="_blank"><span style="color:#28ae60">Orisakwe Nwokocha</span></a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

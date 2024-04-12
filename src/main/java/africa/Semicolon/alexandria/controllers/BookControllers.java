@@ -36,7 +36,7 @@ public class BookControllers {
             GetAllBooksResponse result = bookServices.getAllBooks();
             return new ResponseEntity<>(new ApiResponse(true, result), OK);
         } catch (AlexandriaAppException e) {
-            return new ResponseEntity<>(new ApiResponse(true, e.getMessage()), NO_CONTENT);
+            return new ResponseEntity<>(new ApiResponse(true, e.getMessage()), BAD_REQUEST);
         }
     }
 }
