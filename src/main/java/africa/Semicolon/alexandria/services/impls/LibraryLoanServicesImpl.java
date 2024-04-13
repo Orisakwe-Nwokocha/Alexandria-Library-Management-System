@@ -55,8 +55,8 @@ public class LibraryLoanServicesImpl implements LibraryLoanServices {
 
     private void updateModels(Borrower borrower, Book book, LibraryLoan libraryLoan) {
         bookServices.updateQuantityOf(book, 1);
-        borrower.getBooks().removeIf(b -> b.getId().equals(book.getId()));
-        borrower.getLibraryLoans().removeIf(l -> l.getId().equals(libraryLoan.getId()));
+        borrower.getBooks().removeIf(userBook -> userBook.getId().equals(book.getId()));
+        borrower.getLibraryLoans().removeIf(userLibraryLoan -> userLibraryLoan.getId().equals(libraryLoan.getId()));
         libraryLoan.setReturnedAt(LocalDateTime.now());
         libraryLoans.save(libraryLoan);
         borrowers.save(borrower);

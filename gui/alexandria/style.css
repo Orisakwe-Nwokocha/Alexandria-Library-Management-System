@@ -214,12 +214,19 @@ form {
   50% {
     bottom: -20px;
     opacity: 0;
+
   }
 }
+
+/*.project:hover .code {*/
+/*  color: #28ae60;*/
+/*}*/
+
 
 .projects-section {
   padding: 10rem 2rem;
   background: #444;
+  /*text-align: center;*/
 }
 
 .projects-section-header {
@@ -244,15 +251,17 @@ form {
   justify-content: space-around;
 }
 
+
 @media (max-width: 30.625em) {
   .projects-section {
-    padding: 6rem 1rem;
   }
 
   .projects-grid {
+    padding: 6rem 1rem;
     grid-template-columns: 1fr;
   }
 }
+
 
 .project {
   background: #222;
@@ -260,20 +269,18 @@ form {
   border-radius: 2px;
 }
 
+
 .code {
   color: #222;
   transition: color 0.3s ease-out;
 }
 
-.project:hover .code {
-  color: #28ae60;
+.project-image {
+  max-height: 200px; /* Adjust the maximum height as needed */
+  width: 100%;
+  object-fit: contain; /* Ensure the image fits within its container */
 }
 
-.project-image {
-  height: calc(100% - 6.8rem);
-  width: 100%;
-  object-fit: cover;
-}
 
 .project-title {
   font-size: 2rem;
@@ -292,6 +299,11 @@ form {
   transition: background 0.3s ease-out;
   color: #28ae60 !important;
   border: 1px solid #28ae60;
+  display: inline-flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  margin-top: 2rem;
+  text-align: center;
 }
 
 .btn-show-all:hover {
@@ -308,6 +320,16 @@ form {
   transform: translateX(0);
   transition: transform 0.3s ease-out;
 }
+
+.btn-show-all > span {
+  display: inline-block;
+}
+
+.show-all-button {
+  text-align: center;
+}
+
+
 
 .contact-section {
   display: flex;
@@ -451,7 +473,7 @@ form {
 /*}*/
 
 footer {
-  position: fixed;
+  /*position: fixed;*/
   bottom: 0;
   left: 0;
   width: 100%;

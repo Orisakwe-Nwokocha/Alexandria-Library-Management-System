@@ -10,6 +10,8 @@
 <nav class="nav" id="navbar">
   <ul class="nav-list">
     <li><a href="#welcome-section">About</a></li>
+    <li><a href="#bookList">Books</a></li>
+    <li><a href="#projects">Actions</a></li>
     <li id="logoutNavItem"><a href="#">Logout</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -23,7 +25,6 @@
   </div>
 </section>
 
-
 <h2 class="section-heading">User Details</h2>
 <section class="user-details-section" id="userDetailsSection">
   <div id="userDetails">
@@ -31,6 +32,120 @@
     <div id="user-name"></div>
   </div>
 </section>
+
+<section id="projects" class="projects-section">
+  <h2 class="projects-section-header">Library Operations</h2>
+  <div class="projects-grid">
+
+    <div class="project project-tile">
+      <img class="project-image" src="https://www.shareicon.net/data/128x128/2016/06/27/623443_book_256x256.png"
+           alt="Add a book thumbnail" />
+      <p class="project-title">
+        <span class="code">&lt;</span>
+        Add a new book to the library collection
+        <span class="code">&#47;&gt;</span>
+      </p>
+      <form id="add-book-form" class="form">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="author">Author</label>
+          <input type="text" id="author" name="author" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="genre">Genre</label>
+          <select id="genre" name="genre" class="form-control" required>
+            <option disabled selected value>Select book genre</option>
+            <option value="action">Action</option>
+            <option value="sci-fi">Sci-Fi</option>
+            <option value="drama">Drama</option>
+            <option value="fiction">Fiction</option>
+            <option value="romance">Romance</option>
+            <option value="general">General</option>
+            <option value="software-engineering">Software Engineering</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input type="number" id="quantity" name="quantity" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="add-book-button" class="submit-button">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="project project-tile">
+      <img class="project-image" src="https://www.reshot.com/preview-assets/icons/GJM3PD62HZ/borrow-book-GJM3PD62HZ.svg"
+           alt="Borrow a book thumbnail" />
+      <p class="project-title">
+        <span class="code">&lt;</span>
+        Borrow a book from the library
+        <span class="code">&#47;&gt;</span>
+      </p>
+
+      <form id="borrow-book-form" class="form">
+        <div class="form-group">
+          <label for="borrow-book-id">Book ID</label>
+          <input type="text" id="borrow-book-id" name="borrow-book-id" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" id="borrow-book-button" class="submit-button">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="project project-tile">
+      <img class="project-image" src="https://i.postimg.cc/QxrZ06XH/delete-book-icon.webp"
+           alt="Remove a book thumbnail" />
+      <p class="project-title">
+        <span class="code">&lt;</span>
+        Remove a book from the library collection
+        <span class="code">&#47;&gt;</span>
+      </p>
+
+      <form id="remove-book-form" class="form">
+        <div class="form-group">
+          <label for="remove-book-id">Book ID</label>
+          <input type="text" id="remove-book-id" name="remove-book-id" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="remove-book-button" class="submit-button">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="project project-tile">
+      <img class="project-image" src="https://www.reshot.com/preview-assets/icons/GJM3PD62HZ/borrow-book-GJM3PD62HZ.svg"
+           alt="Return a book thumbnail" />
+      <p class="project-title">
+        <span class="code">&lt;</span>
+        Return a borrowed book
+        <span class="code">&#47;&gt;</span>
+      </p>
+
+      <form id="return-book-form" class="form">
+        <div class="form-group">
+          <label for="library-loan-id">Library Loan ID</label>
+          <input type="text" id="library-loan-id" name="library-loan-id" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="return-book-button" class="submit-button">Submit</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+  <div class="show-all-button">
+    <a href="https://documenter.getpostman.com/view/33764605/2sA3BgBFzN" class="btn btn-show-all" target="_blank">
+      <span>Show all</span> <i class="fas fa-chevron-right"></i>
+    </a>
+  </div>
+</section>
+
 
 <h2 class="section-heading">Books</h2>
 <div id="bookList"></div>
@@ -42,7 +157,8 @@
   </div>
   <div class="contact-links">
     <a href="#" class="btn contact-details"><i class="fab fa-facebook-square"></i> Facebook</a>
-    <a id="profile-link" href="https://github.com/Orisakwe-Nwokocha" target="_blank" class="btn contact-details"><i class="fab fa-github"></i> GitHub</a>
+    <a id="profile-link" href="https://github.com/Orisakwe-Nwokocha" target="_blank" class="btn contact-details">
+      <i class="fab fa-github"></i> GitHub</a>
     <a href="#" class="btn contact-details"><i class="fab fa-twitter"></i> Twitter</a>
     <a href="#" class="btn contact-details"><i class="fas fa-envelope"></i> Email</a>
     <a href="#" class="btn contact-details"><i class="fas fa-mobile-alt"></i> Call me</a>
@@ -51,7 +167,8 @@
 
 
 <footer>
-  <p>&copy;2024 All rights reserved | This web page was created by <a href="https://github.com/Orisakwe-Nwokocha" target="_blank"><span style="color:#28ae60">Orisakwe Nwokocha</span></a></p>
+  <p>&copy;2024 All rights reserved | This web page was created by
+    <a href="https://github.com/Orisakwe-Nwokocha" target="_blank"><span style="color:#28ae60">Orisakwe Nwokocha</span></a></p>
 </footer>
 
 <script src="app.js"></script>

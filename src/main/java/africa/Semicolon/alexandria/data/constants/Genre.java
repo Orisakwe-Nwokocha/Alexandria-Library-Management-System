@@ -6,5 +6,6 @@ public enum Genre {
     FICTION,
     DRAMA,
     ROMANCE,
+    GENERAL,
     SOFTWARE_ENGINEERING
 }

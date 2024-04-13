@@ -14,6 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('logoutNavItem').addEventListener('click', logoutUser);
   }
 
+  if (document.getElementById('add-book-form')) {
+    document.getElementById('add-book-form').addEventListener('submit', addBook);
+  }
+
+  if (document.getElementById('borrow-book-form')) {
+    document.getElementById('borrow-book-form').addEventListener('submit', borrowBook);
+  }
+
+  if (document.getElementById('remove-book-form')) {
+    document.getElementById('remove-book-form').addEventListener('submit', removeBook);
+  }
+
+  if (document.getElementById('return-book-form')) {
+    document.getElementById('return-book-form').addEventListener('submit', returnBook);
+  }
+
 
   initializeUserDetails();
   fetchAllBooks();
@@ -202,8 +218,168 @@ function displayBooks(books) {
     bookItem.innerHTML = `
       <p class="title">Title: ${book.title}</p>
       <p class="author">Author: ${book.author}</p>
-      <p class="genre">Genre: ${book.genre}</p>`;
+      <p class="genre">Genre: ${book.genre}</p>
+      <p class="genre">ID: ${book.id}</p>`;
     bookListContainer.appendChild(bookItem);
   });
 }
+
+async function addBook(event) {
+  event.preventDefault();
+
+  const username = sessionStorage.getItem('username').replace('Username: ', '');
+  if (!username) {
+    console.error('Username not found in session storage');
+    alert('Username not found. Please try logging in again.');
+    return;
+  }
+
+  const formData = new FormData(this);
+  const requestData = {
+    username: username,
+    title: formData.get('title'),
+    author: formData.get('author'),
+    genre: formData.get('genre'),
+    quantity: formData.get("quantity")
+  };
+
+  try {
+    const response = await fetch(`${userApiUrl}/add-book`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    const responseData = await response.json();
+    if (responseData.successful) {
+      alert('Book added successfully.');
+      console.log(responseData);
+    } else {
+      alert('Failed to add book. Please try again.');
+      console.log(responseData);
+    }
+  } catch (error) {
+    console.error('Error adding book:', error);
+    alert('Failed to add book. Please try again.');
+  }
+}
+
+async function borrowBook(event) {
+  event.preventDefault();
+
+  const username = sessionStorage.getItem('username').replace('Username: ', '');
+  if (!username) {
+    console.error('Username not found in session storage');
+    alert('Username not found. Please try logging in again.');
+    return;
+  }
+
+  const formData = new FormData(this);
+  const requestData = {
+    username: username,
+    bookId: formData.get('borrow-book-id')
+  };
+
+  try {
+    const response = await fetch(`${userApiUrl}/borrow-book`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    const responseData = await response.json();
+    if (responseData.successful) {
+      alert('Book borrowed successfully.');
+      console.log(responseData);
+    } else {
+      alert('Failed to borrow book. Please try again.');
+      console.log(responseData);
+    }
+  } catch (error) {
+    console.error('Error borrowing book:', error);
+    alert('Failed to borrow book. Please try again.');
+  }
+}
+
+async function removeBook(event) {
+  event.preventDefault();
+
+  const username = sessionStorage.getItem('username').replace('Username: ', '');
+  if (!username) {
+    console.error('Username not found in session storage');
+    alert('Username not found. Please try logging in again.');
+    return;
+  }
+
+  const formData = new FormData(this);
+  const requestData = {
+    username: username,
+    bookId: formData.get("remove-book-id")
+  };
+  try {
+    const response = await fetch(`${bookApiUrl}/remove-book`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    const responseData = await response.json();
+    if (responseData.successful) {
+      alert('Book removed successfully.');
+      console.log(responseData);
+    } else {
+      alert('Failed to remove book. Please try again.');
+      console.log(responseData);
+    }
+  } catch (error) {
+    console.error('Error removing book:', error);
+    alert('Failed to remove book. Please try again.');
+  }
+}
+
+async function returnBook(event) {
+  event.preventDefault();
+
+  const username = sessionStorage.getItem('username').replace('Username: ', '');
+  if (!username) {
+    console.error('Username not found in session storage');
+    alert('Username not found. Please try logging in again.');
+    return;
+  }
+
+  const formData = new FormData(this);
+  const requestData = {
+    username: username,
+    libraryLoanId: formData.get("library-loan-id")
+  };
+  try {
+    const response = await fetch(`${userApiUrl}/return-book`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    const responseData = await response.json();
+    if (responseData.successful) {
+      alert('Book returned successfully.');
+      console.log(responseData);
+    } else {
+      alert('Failed to return book. Please try again.');
+      console.log(responseData);
+    }
+  } catch (error) {
+    console.error('Error returning book:', error);
+    alert('Failed to return book. Please try again.');
+  }
+}
+
+
 
