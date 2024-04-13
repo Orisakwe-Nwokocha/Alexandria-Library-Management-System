@@ -58,7 +58,7 @@ a {
   width: 50%;
   max-width: 400px;
   margin: 10% auto;
-  padding: 20px; /* Adjusted padding */
+  padding: 20px;
   border-radius: 10px;
   background-color: #1f1f1f;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -66,7 +66,7 @@ a {
 
 form {
   background: #1f1f1f;
-  padding: 2.5rem; /* Adjusted padding */
+  padding: 2.5rem;
   border-radius: 0.25rem;
 }
 
@@ -226,7 +226,6 @@ form {
 .projects-section {
   padding: 10rem 2rem;
   background: #444;
-  /*text-align: center;*/
 }
 
 .projects-section-header {
@@ -276,9 +275,9 @@ form {
 }
 
 .project-image {
-  max-height: 200px; /* Adjust the maximum height as needed */
+  max-height: 200px;
   width: 100%;
-  object-fit: contain; /* Ensure the image fits within its container */
+  object-fit: contain;
 }
 
 
@@ -329,8 +328,6 @@ form {
   text-align: center;
 }
 
-
-
 .contact-section {
   display: flex;
   flex-direction: column;
@@ -341,7 +338,6 @@ form {
   height: 50vh;
   padding: 0 2rem;
   background: #565656;
-  margin-bottom: 100px;
 }
 
 .contact-section-header > h2 {
@@ -432,7 +428,6 @@ form {
   margin-bottom: 10px;
 }
 
-/* Book Item Styling */
 .book-item {
   margin-bottom: 10px;
   padding: 10px;
@@ -459,18 +454,26 @@ form {
   color: #666;
 }
 
+#response-data {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-/*!* Footer *!*/
-/*footer {*/
-/*  !*position: fixed;*!*/
-/*  bottom: 0;*/
-/*  font-weight: 300;*/
-/*  display: flex;*/
-/*  justify-content: flex-end;*/
-/*  padding: 2rem;*/
-/*  background: #1f1f1f;*/
-/*  color: #c7c7c7;*/
-/*}*/
+.successful {
+  font-weight: bold;
+  color: green;
+}
+
+.error {
+  font-weight: bold;
+  color: red;
+}
+
+.response {
+  color: #666;
+}
 
 footer {
   /*position: fixed;*/

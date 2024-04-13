@@ -1,40 +1,51 @@
-const userApiUrl = 'http://localhost:8080/user';
-const bookApiUrl = 'http://localhost:8080/book';
+const apiUrls = {
+  user: 'http://localhost:8080/user',
+  book: 'http://localhost:8080/book'
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('registerForm')) {
-    document.getElementById('registerForm').addEventListener('submit', registerUser);
-  }
-
-  if (document.getElementById('loginForm')) {
-    document.getElementById('loginForm').addEventListener('submit', loginUser);
-  }
-
-  if (document.getElementById('logoutNavItem')) {
-    document.getElementById('logoutNavItem').addEventListener('click', logoutUser);
-  }
-
-  if (document.getElementById('add-book-form')) {
-    document.getElementById('add-book-form').addEventListener('submit', addBook);
-  }
-
-  if (document.getElementById('borrow-book-form')) {
-    document.getElementById('borrow-book-form').addEventListener('submit', borrowBook);
-  }
-
-  if (document.getElementById('remove-book-form')) {
-    document.getElementById('remove-book-form').addEventListener('submit', removeBook);
-  }
-
-  if (document.getElementById('return-book-form')) {
-    document.getElementById('return-book-form').addEventListener('submit', returnBook);
-  }
-
+  submitEventListener('registerForm', registerUser);
+  submitEventListener('loginForm', loginUser);
+  clickEventListener('logoutNavItem', logoutUser);
+  submitEventListener('add-book-form', addBook);
+  submitEventListener('borrow-book-form', borrowBook);
+  submitEventListener('remove-book-form', removeBook);
+  submitEventListener('return-book-form', returnBook);
 
   initializeUserDetails();
-  fetchAllBooks();
-
+  getAllBooks();
 });
+
+function submitEventListener(formId, event) {
+  const form = document.getElementById(formId);
+  if (form) {
+    form.addEventListener('submit', event);
+  }
+}
+
+function clickEventListener(elementId, handler) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.addEventListener('click', handler);
+  }
+}
+
+async function makeApiCallWith(url, method, requestData) {
+  try {
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error making API call to ${url}:`, error);
+    throw new Error(`Failed to make API call to ${url}`);
+  }
+}
 
 async function registerUser(event) {
   event.preventDefault();
@@ -47,17 +58,10 @@ async function registerUser(event) {
   };
 
   try {
-    const response = await fetch(`${userApiUrl}/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await makeApiCallWith(`${apiUrls.user}/register`, 'POST', requestData);
 
-    const responseData = await response.json();
-    if (responseData.successful) {
-      handleRegistrationSuccess(responseData.data);
+    if (response.successful) {
+      handleRegistrationSuccess(response.data);
     } else {
       handleRegistrationFailure();
     }
@@ -69,7 +73,7 @@ async function registerUser(event) {
 
 function handleRegistrationSuccess(userData) {
   alert('Registration successful.');
-  redirectToRegisteredUserPage(userData);
+  redirectToUsersPage(userData);
 }
 
 function handleRegistrationFailure() {
@@ -86,17 +90,10 @@ async function loginUser(event) {
   };
 
   try {
-    const response = await fetch(`${userApiUrl}/login`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await makeApiCallWith(`${apiUrls.user}/login`, 'PATCH', requestData);
 
-    const responseData = await response.json();
-    if (responseData.successful) {
-      handleLoginSuccess(responseData.data);
+    if (response.successful) {
+      handleLoginSuccess(response.data);
     } else {
       handleLoginFailure();
     }
@@ -108,7 +105,7 @@ async function loginUser(event) {
 
 function handleLoginSuccess(userData) {
   alert('Login successful.');
-  redirectToRegisteredUserPage(userData);
+  redirectToUsersPage(userData);
 }
 
 function handleLoginFailure() {
@@ -130,16 +127,9 @@ async function logoutUser(event) {
   };
 
   try {
-    const response = await fetch(`${userApiUrl}/logout`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await makeApiCallWith(`${apiUrls.user}/logout`, 'PATCH', requestData);
 
-    const responseData = await response.json();
-    if (responseData.successful) {
+    if (response.successful) {
       handleLogoutSuccess();
     } else {
       handleLogoutFailure();
@@ -153,7 +143,6 @@ async function logoutUser(event) {
 function handleLogoutSuccess() {
   alert('Logout successful.');
   window.location.href = 'login-page.html';
-
 }
 
 function handleLogoutFailure() {
@@ -166,19 +155,19 @@ async function initializeUserDetails() {
   for (const [key, value] of urlParams) {
     userData[key] = value;
   }
-  displayUserDetails(userData);
+  displayDetailsIn(userData);
 
   const usernameElement = document.getElementById('user-name');
   const username = usernameElement.textContent.trim();
   sessionStorage.setItem('username', username);
 }
 
-function redirectToRegisteredUserPage(userData) {
+function redirectToUsersPage(userData) {
   const queryString = Object.keys(userData).map(key => key + '=' + userData[key]).join('&');
   window.location.href = `users.html?${queryString}`;
 }
 
-function displayUserDetails(userData) {
+function displayDetailsIn(userData) {
   const userIdElement = document.getElementById('user-id');
   userIdElement.innerHTML = `<strong>ID:</strong> ${userData.id}`;
   userIdElement.style.color = '#555';
@@ -188,29 +177,24 @@ function displayUserDetails(userData) {
   userNameElement.style.color = '#555';
 }
 
-async function fetchAllBooks() {
+async function getAllBooks() {
   try {
-    const response = await fetch(`${bookApiUrl}/all`);
+    const response = await makeApiCallWith(`${apiUrls.book}/all`, 'GET');
 
-    if (!response.ok) {
+    if (!response.successful) {
       throw new Error(`Error: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    if (responseData.successful) {
-      const books = responseData.data.books;
-      displayBooks(books);
-    } else {
-      console.error('Failed to fetch books:', responseData.message);
-    }
+    const books = response.data.books;
+    displayBooks(books);
   } catch (error) {
     console.error('Failed to fetch books:', error);
   }
 }
 
 function displayBooks(books) {
-  const bookListContainer = document.getElementById('bookList');
-  bookListContainer.innerHTML = '';
+  const bookList = document.getElementById('bookList');
+  bookList.innerHTML = '';
 
   books.forEach(book => {
     const bookItem = document.createElement('div');
@@ -220,7 +204,7 @@ function displayBooks(books) {
       <p class="author">Author: ${book.author}</p>
       <p class="genre">Genre: ${book.genre}</p>
       <p class="genre">ID: ${book.id}</p>`;
-    bookListContainer.appendChild(bookItem);
+    bookList.appendChild(bookItem);
   });
 }
 
@@ -244,21 +228,14 @@ async function addBook(event) {
   };
 
   try {
-    const response = await fetch(`${userApiUrl}/add-book`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await makeApiCallWith(`${apiUrls.user}/add-book`, 'POST', requestData);
 
-    const responseData = await response.json();
-    if (responseData.successful) {
+    if (response.successful) {
       alert('Book added successfully.');
-      console.log(responseData);
+      display(response);
     } else {
       alert('Failed to add book. Please try again.');
-      console.log(responseData);
+      display(response);
     }
   } catch (error) {
     console.error('Error adding book:', error);
@@ -283,21 +260,14 @@ async function borrowBook(event) {
   };
 
   try {
-    const response = await fetch(`${userApiUrl}/borrow-book`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await makeApiCallWith(`${apiUrls.user}/borrow-book`, 'PATCH', requestData);
 
-    const responseData = await response.json();
-    if (responseData.successful) {
+    if (response.successful) {
       alert('Book borrowed successfully.');
-      console.log(responseData);
+      display(response);
     } else {
       alert('Failed to borrow book. Please try again.');
-      console.log(responseData);
+      display(response);
     }
   } catch (error) {
     console.error('Error borrowing book:', error);
@@ -321,21 +291,14 @@ async function removeBook(event) {
     bookId: formData.get("remove-book-id")
   };
   try {
-    const response = await fetch(`${bookApiUrl}/remove-book`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await makeApiCallWith(`${apiUrls.user}/remove-book`, 'DELETE', requestData);
 
-    const responseData = await response.json();
-    if (responseData.successful) {
+    if (response.successful) {
       alert('Book removed successfully.');
-      console.log(responseData);
+      display(response);
     } else {
       alert('Failed to remove book. Please try again.');
-      console.log(responseData);
+      display(response);
     }
   } catch (error) {
     console.error('Error removing book:', error);
@@ -359,21 +322,14 @@ async function returnBook(event) {
     libraryLoanId: formData.get("library-loan-id")
   };
   try {
-    const response = await fetch(`${userApiUrl}/return-book`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
+    const response = await makeApiCallWith(`${apiUrls.user}/return-book`, 'PATCH', requestData);
 
-    const responseData = await response.json();
-    if (responseData.successful) {
+    if (response.successful) {
       alert('Book returned successfully.');
-      console.log(responseData);
+      display(response);
     } else {
       alert('Failed to return book. Please try again.');
-      console.log(responseData);
+      display(response);
     }
   } catch (error) {
     console.error('Error returning book:', error);
@@ -381,5 +337,12 @@ async function returnBook(event) {
   }
 }
 
-
-
+function display(response) {
+  const responseData = document.getElementById('response-data');
+  if (responseData) {
+    responseData.innerHTML = `
+      ${response.successful ? `<p class="successful">Successful: ${response.successful}</p>` : ''}
+      ${!response.successful ? `<p class="error">Error: ${response.successful}</p>` : ''}
+      <p class="response">Response: ${JSON.stringify(response.data)}</p>`;
+  }
+}
