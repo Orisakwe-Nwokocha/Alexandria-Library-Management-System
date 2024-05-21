@@ -8,6 +8,7 @@ import africa.Semicolon.alexandria.dto.requests.*;
 import africa.Semicolon.alexandria.dto.responses.*;
 import africa.Semicolon.alexandria.exceptions.*;
 import africa.Semicolon.alexandria.services.BookServices;
+import africa.Semicolon.alexandria.services.EmailService;
 import africa.Semicolon.alexandria.services.LibraryLoanServices;
 import africa.Semicolon.alexandria.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,19 @@ public class UserServicesImpl implements UserServices {
     private BookServices bookServices;
     @Autowired
     private LibraryLoanServices libraryLoanServices;
+    @Autowired
+    private EmailService emailService;
+
 
     @Override
     public RegisterResponse register(RegisterRequest registerRequest) {
         validate(registerRequest);
         User newUser = map(registerRequest);
+        emailService.sendEmail("orisakwenwokocha1@gmail.com", "Registration Successful", registerRequest.getUsername());
         User savedUser = users.save(newUser);
         return mapRegisterResponseWith(savedUser);
     }
+
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
