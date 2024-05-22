@@ -20,12 +20,18 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmail(String to, String subject, String name)  {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom("orisha.spring.maail@gmail.com");
-//        message.setTo(to);
-//        message.setSubject(subject);
-//        message.setText(name);
-//        mailSender.send(message);
+        validate(to);
+//        try {
+//            SimpleMailMessage message = new SimpleMailMessage();
+//            message.setFrom("orisha.spring.maail@gmail.com");
+//            message.setTo(to);
+//            message.setSubject(subject);
+//            message.setText(name);
+//            mailSender.send(message);
+//        } catch (Exception e) {
+//            System.out.println("Error: " +e.getMessage());
+//            throw new AlexandriaAppException("Error sending email");
+//        }
 
 
         try {
@@ -47,7 +53,12 @@ public class EmailServiceImpl implements EmailService {
             System.out.println("Error: " +e.getMessage());
             throw new AlexandriaAppException("Error sending email");
         }
+    }
 
+    public static void validate(String email) {
+        email = email.toLowerCase();
+        String regex = "([a-z0-9]+\\.)?[a-z0-9]+@[a-z0-9]+\\.[a-z]{2,}";
+        if (!email.matches(regex)) throw new AlexandriaAppException("Email is invalid");
     }
 
 

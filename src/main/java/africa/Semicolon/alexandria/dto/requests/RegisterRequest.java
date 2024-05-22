@@ -16,4 +16,5 @@ public final class RegisterRequest {
     @NotNull(message = "Role cannot be null")
     @NotBlank(message = "Role cannot be blank")
     private String role;
+    private String otp;
 }

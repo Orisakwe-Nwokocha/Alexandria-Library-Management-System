@@ -7,10 +7,7 @@ import africa.Semicolon.alexandria.data.repositories.Users;
 import africa.Semicolon.alexandria.dto.requests.*;
 import africa.Semicolon.alexandria.dto.responses.*;
 import africa.Semicolon.alexandria.exceptions.*;
-import africa.Semicolon.alexandria.services.BookServices;
-import africa.Semicolon.alexandria.services.EmailService;
-import africa.Semicolon.alexandria.services.LibraryLoanServices;
-import africa.Semicolon.alexandria.services.UserServices;
+import africa.Semicolon.alexandria.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +27,19 @@ public class UserServicesImpl implements UserServices {
     private LibraryLoanServices libraryLoanServices;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private OtpService otpService;
 
 
     @Override
     public RegisterResponse register(RegisterRequest registerRequest) {
         validate(registerRequest);
         User newUser = map(registerRequest);
+
+        if (registerRequest.getOtp() == null)
+            return otpService.generateAndSendOtp("orisakwenwokocha1@gmail.com", newUser);
+        otpService.validate(registerRequest.getOtp(), newUser);
+
         emailService.sendEmail("orisakwenwokocha1@gmail.com", "Registration Successful", registerRequest.getUsername());
         User savedUser = users.save(newUser);
         return mapRegisterResponseWith(savedUser);
