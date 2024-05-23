@@ -30,7 +30,7 @@ public class OtpServiceImpl implements OtpService {
         newOtp.setUsername(user.getUsername());
         newOtp.setOtpGeneratedAt(LocalDateTime.now());
 
-        emailService.sendEmail("orisakwenwokocha1@gmail.com", "One-Time Password", otp);
+        emailService.sendEmail("orisakwenwokocha1@gmail.com", "One-Time Password", "otp-template", otp);
         otpRepository.save(newOtp);
 
         RegisterResponse registerResponse = new RegisterResponse();

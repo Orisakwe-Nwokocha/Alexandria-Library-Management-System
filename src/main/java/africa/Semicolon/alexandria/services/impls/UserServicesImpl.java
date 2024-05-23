@@ -40,7 +40,10 @@ public class UserServicesImpl implements UserServices {
             return otpService.generateAndSendOtp("orisakwenwokocha1@gmail.com", newUser);
         otpService.validate(registerRequest.getOtp(), newUser);
 
-        emailService.sendEmail("orisakwenwokocha1@gmail.com", "Registration Successful", registerRequest.getUsername());
+        String template = "registration-template";
+
+        emailService.sendEmail("orisakwenwokocha1@gmail.com", "Registration Successful",
+                template, registerRequest.getUsername());
         User savedUser = users.save(newUser);
         return mapRegisterResponseWith(savedUser);
     }

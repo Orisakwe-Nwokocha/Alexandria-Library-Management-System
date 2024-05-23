@@ -19,7 +19,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void sendEmail(String to, String subject, String name)  {
+    public void sendEmail(String to, String subject, String template, String text)  {
         validate(to);
 //        try {
 //            SimpleMailMessage message = new SimpleMailMessage();
@@ -39,8 +39,8 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             Context context = new Context();
-            context.setVariable("name", name);
-            String html = templateEngine.process("email-template", context);
+            context.setVariable("name", text);
+            String html = templateEngine.process(template, context);
 
             helper.setTo(to);
             helper.setFrom("orisha.spring.maail@gmail.com");
