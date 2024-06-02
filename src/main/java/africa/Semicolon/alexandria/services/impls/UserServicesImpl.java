@@ -44,9 +44,8 @@ public class UserServicesImpl implements UserServices {
         emailService.sendEmail(registerRequest.getEmail(), "Registration Successful",
                 template, registerRequest.getUsername());
 
-        newUser = users.save(newUser);
-//        User savedUser = users.save(newUser);
-        return mapRegisterResponseWith(newUser);
+        User savedUser = users.save(newUser);
+        return mapRegisterResponseWith(savedUser);
     }
 
 
