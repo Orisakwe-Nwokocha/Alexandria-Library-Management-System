@@ -36,16 +36,17 @@ public class UserServicesImpl implements UserServices {
         validate(registerRequest);
         User newUser = map(registerRequest);
 
-        if (registerRequest.getOtp() == null)
-            return otpService.generateAndSendOtp("orisakwenwokocha1@gmail.com", newUser);
+        if (registerRequest.getOtp() == null || registerRequest.getOtp().isBlank())
+            return otpService.generateAndSendOtp(registerRequest.getEmail(), newUser);
         otpService.validate(registerRequest.getOtp(), newUser);
 
         String template = "registration-template";
-
-        emailService.sendEmail("orisakwenwokocha1@gmail.com", "Registration Successful",
+        emailService.sendEmail(registerRequest.getEmail(), "Registration Successful",
                 template, registerRequest.getUsername());
-        User savedUser = users.save(newUser);
-        return mapRegisterResponseWith(savedUser);
+
+        newUser = users.save(newUser);
+//        User savedUser = users.save(newUser);
+        return mapRegisterResponseWith(newUser);
     }
 
 

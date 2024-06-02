@@ -7,18 +7,17 @@ import africa.Semicolon.alexandria.dto.responses.RegisterResponse;
 import africa.Semicolon.alexandria.exceptions.AlexandriaAppException;
 import africa.Semicolon.alexandria.services.EmailService;
 import africa.Semicolon.alexandria.services.OtpService;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class OtpServiceImpl implements OtpService {
-    @Autowired
-    private OtpRepository otpRepository;
-    @Autowired
-    private EmailService emailService;
+    private final OtpRepository otpRepository;
+    private final EmailService emailService;
 
     @Override
     public africa.Semicolon.alexandria.dto.responses.RegisterResponse generateAndSendOtp(String email, User user) {
@@ -30,7 +29,7 @@ public class OtpServiceImpl implements OtpService {
         newOtp.setUsername(user.getUsername());
         newOtp.setOtpGeneratedAt(LocalDateTime.now());
 
-        emailService.sendEmail("orisakwenwokocha1@gmail.com", "One-Time Password", "otp-template", otp);
+        emailService.sendEmail(email, "One-Time Password", "otp-template", otp);
         otpRepository.save(newOtp);
 
         RegisterResponse registerResponse = new RegisterResponse();
@@ -43,17 +42,17 @@ public class OtpServiceImpl implements OtpService {
         Otp foundOtp = otpRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new AlexandriaAppException("Otp not found"));
 
-        var submissionTime = LocalDateTime.now().minusMinutes(5);
-        LocalDateTime generatedTime = foundOtp.getOtpGeneratedAt();
-
-        boolean isAfter = submissionTime.isAfter(generatedTime);
-        if (isAfter) {
-            otpRepository.delete(foundOtp);
-            throw new AlexandriaAppException("OTP is invalid or expired");
-        }
-        if (!foundOtp.getOtp().equals(otp)) throw new AlexandriaAppException("OTP is invalid or expired");
-
+        validate(otp, foundOtp);
         otpRepository.delete(foundOtp);
+    }
+
+    private static void validate(String otp, Otp foundOtp) {
+        LocalDateTime submissionTime = LocalDateTime.now();
+        LocalDateTime validityTime = foundOtp.getOtpGeneratedAt().plusMinutes(5);
+
+        boolean isExpired = submissionTime.isAfter(validityTime);
+        boolean isEquals = foundOtp.getOtp().equals(otp);
+        if (isExpired || !isEquals) throw new AlexandriaAppException("OTP is invalid or expired");
     }
 
     private static String generateOtp() {
