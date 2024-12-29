@@ -57,7 +57,7 @@ public class EmailServiceImpl implements EmailService {
 
     public static void validate(String email) {
         email = email.toLowerCase();
-        String regex = "([a-z0-9]+\\.)?[a-z0-9]+@[a-z0-9]+\\.[a-z]{2,}";
+        String regex = "([a-z0-9]+\\.)?[a-z0-9]+@[a-z0-9.-]+(\\.[a-z]{2,})$";        
         if (!email.matches(regex)) throw new AlexandriaAppException("Email is invalid");
     }
 
