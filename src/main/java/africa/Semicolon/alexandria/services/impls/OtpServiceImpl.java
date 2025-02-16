@@ -52,7 +52,10 @@ public class OtpServiceImpl implements OtpService {
 
         boolean isExpired = submissionTime.isAfter(validityTime);
         boolean isEquals = foundOtp.getOtp().equals(otp);
-        if (isExpired || !isEquals) throw new AlexandriaAppException("OTP is invalid or expired");
+        if (isExpired || !isEquals) {
+            otpRepository.delete(foundOtp);
+            throw new AlexandriaAppException("OTP is invalid or expired");
+        }
     }
 
     private static String generateOtp() {
