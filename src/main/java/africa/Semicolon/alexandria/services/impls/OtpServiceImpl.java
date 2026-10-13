@@ -46,7 +46,7 @@ public class OtpServiceImpl implements OtpService {
         otpRepository.delete(foundOtp);
     }
 
-    private static void validate(String otp, Otp foundOtp) {
+    private void validate(String otp, Otp foundOtp) {
         LocalDateTime submissionTime = LocalDateTime.now();
         LocalDateTime validityTime = foundOtp.getOtpGeneratedAt().plusMinutes(5);
 
