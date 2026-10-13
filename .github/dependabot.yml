@@ -1,0 +1,32 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+    groups:
+      maven-security:
+        applies-to: security-updates
+        patterns: ["*"]
+      maven-versions:
+        applies-to: version-updates
+        patterns: ["*"]
+
+  - package-ecosystem: "npm"
+    directory: "/gui/alexandria"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
+      npm-versions:
+        applies-to: version-updates
+        patterns: ["*"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
